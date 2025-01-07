@@ -1,0 +1,6 @@
+watchdog>=2.1.9
+qiniu>=7.7.1
+gspread>=5.7.2
+google-auth>=2.15.0
+python-dotenv>=0.21.0
+tenacity>=9.0.0 
