@@ -28,11 +28,12 @@ class QiniuUploader:
         """获取文件的访问URL"""
         return f"http://{self.domain}/{key}"
         
-    def upload(self, local_file, retry_times=3):
+    def upload(self, local_file, relative_path=None, retry_times=3):
         """上传文件到七牛云
         
         Args:
             local_file: 本地文件路径
+            relative_path: 相对路径，用于在七牛云中保持文件夹结构
             retry_times: 重试次数
             
         Returns:
@@ -42,8 +43,15 @@ class QiniuUploader:
             logger.error(f"文件不存在: {local_file}")
             return None
             
-        # 生成文件key，使用文件名作为key
-        key = os.path.basename(local_file)
+        # 生成文件key，保持文件夹结构
+        file_name = os.path.basename(local_file)
+        if relative_path and relative_path != '.':
+            # 使用正斜杠(/)作为路径分隔符，确保URL正确
+            key = f"{relative_path.replace(os.sep, '/')}/{file_name}"
+        else:
+            key = file_name
+            
+        logger.info(f"上传文件: {local_file} -> {key}")
         
         # 获取上传凭证
         token = self.get_upload_token(key)
